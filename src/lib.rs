@@ -58,21 +58,17 @@ fn write_file(path: &str, content: &str) {
     // debug
     // println!("path: {}, value: {}", path, content);
 
-    match set_permissions(path, PermissionsExt::from_mode(0o644)) {
-        Ok(()) => {
-            match OpenOptions::new()
-                .write(true)
-                .truncate(true)
-                .create(true)
-                .open(path)
-            {
-                Ok(mut file) => match file.write_all(content.as_bytes()) {
-                    Ok(()) => {}
-                    Err(e) => eprintln!("Write failed: {}", e),
-                },
-                Err(e) => eprintln!("Open failed: {}", e),
-            }
-        }
-        Err(e) => eprintln!("Set permissions failed: {}", e),
+    let _ = set_permissions(path, PermissionsExt::from_mode(0o644));
+    match OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open(path)
+    {
+        Ok(mut file) => match file.write_all(content.as_bytes()) {
+            Ok(()) => {}
+            Err(e) => eprintln!("Write failed: {}", e),
+        },
+        Err(e) => eprintln!("Open failed: {}", e),
     }
 }
